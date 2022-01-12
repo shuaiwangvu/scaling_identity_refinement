@@ -1,2 +1,4 @@
 # scaling_identity_refinement
-test commit
+logbook:
+networkx tutorial: 2 hours
+assignment: 2 hours
