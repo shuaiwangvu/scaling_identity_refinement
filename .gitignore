@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 .vscode/settings.json
 .gitignore
+data/yago-wd-sameAs.nt.gz
+data/commons-sameas-links_lang=nl.ttl
+data/sameas-external.ttl
