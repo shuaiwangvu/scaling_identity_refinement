@@ -28,15 +28,11 @@ files= [
 'identity_links/commons-sameas-links_lang=en-1.ttl','identity_links/commons-sameas-links_lang=fr-1.ttl',
 'identity_links/commons-sameas-links_lang=pt-1.ttl','identity_links/commons-sameas-links_lang=nl-1.ttl',
 ]
+#files I skipped
+#[‘identity_links/yago-wd-sameAs.nt','identity_links/sameas-external.ttl'',
+# 'identity_links/sameas-all-wikis.ttl','identity_links/sameas-external-1.ttl', 'mappingbased-objects-uncleaned.ttl']
 
 for file in files:
     count_triples(file, file.split(".")[-1])
 
-new_g.serialize(destination="identity_graph.nt")
-
-g = Graph().parse('identity_graph.nt', format='nt')
-
-count_sameAs = 0
-for _,_,_ in g.triples((None, URIRef(sameAs), None)):
-    count_sameAs += 1
-print('identity_graph.nt has ', len(g), " triples and ", count_sameAs , " amount of sameAs triples")
+new_g.serialize(destination="identity_graph.ttl")
