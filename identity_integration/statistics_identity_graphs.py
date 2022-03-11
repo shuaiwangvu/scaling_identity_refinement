@@ -7,7 +7,7 @@ def count_triples(path, format):
     g = Graph().parse(path, format=format)
 
     count_sameAs = 0
-    count_seeAlso = 0
+    count_seeAlso = 0 #test commit
 
     for _,_,_ in g.triples((None, URIRef(sameAs), None)):
         count_sameAs += 1
