@@ -132,3 +132,6 @@ dmypy.json
 data/yago-wd-sameAs.nt.gz
 data/commons-sameas-links_lang=nl.ttl
 data/sameas-external.ttl
+identity_integration/ten_triples_Ata.ttl
+.gitignore
+identity_integration/commons-sameas-links_lang=en.ttl
