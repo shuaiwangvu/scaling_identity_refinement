@@ -1,22 +1,25 @@
+# a simple description: asdfghjkl;lkjhgfds
+
 from rdflib import Graph, URIRef
 
 sameAs = 'http://www.w3.org/2002/07/owl#sameAs'
-seeAlso= 'https://www.w3.org/TR/rdf-schema/#ch_seealso'
+seeAlso= 'https://www.w3.org/TR/rdf-schema/#ch_seealso' #????
+# http://www.w3.org/2000/01/rdf-schema#seeAlso
 
 def count_triples(path, format):
-    g = Graph().parse(path, format=format)
+	g = Graph().parse(path, format=format)
 
-    count_sameAs = 0
-    count_seeAlso = 0
+	count_sameAs = 0
+	count_seeAlso = 0
 
-    for _,_,_ in g.triples((None, URIRef(sameAs), None)):
-        count_sameAs += 1
-    for _,_,_ in g.triples((None, URIRef(seeAlso), None)):
-        count_seeAlso += 1
+	for _,_,_ in g.triples((None, URIRef(sameAs), None)):
+		count_sameAs += 1
+	for _,_,_ in g.triples((None, URIRef(seeAlso), None)):
+		count_seeAlso += 1
 
-    print(path, " has ", len(g), " triples and ", count_sameAs , " amount of sameAs triples and ", count_seeAlso, " rdf seeAlso triples.")
+	print(path, " has ", len(g), " triples and ", count_sameAs , " amount of sameAs triples and ", count_seeAlso, " rdf seeAlso triples.")
 
 files= ['commons-sameas-links_lang=nl.ttl']
 
 for file in files:
-    count_triples(file, file.split(".")[-1])
+	count_triples(file, file.split(".")[-1])
