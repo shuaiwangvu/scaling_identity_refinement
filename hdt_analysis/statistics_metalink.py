@@ -12,18 +12,18 @@ def find_statement_id(subject, object):
     triples_statement_id_regarding_subject, cardinality_statement_id_regarding_subject = hdt_metalink.search_triples("", rdf_subject, subject)
     collect_statement_id_regarding_subject = set()
 
-    for (s,_,o) in triples_statement_id_regarding_subject:
+    for (s,_,_) in triples_statement_id_regarding_subject:
         collect_statement_id_regarding_subject.add(str(s))
     
     triples_statement_id_regarding_object, cardinality_statement_id_regarding_object = hdt_metalink.search_triples("", rdf_object, object)
     collect_statement_id_regarding_object = set()
 
-    for (s,_,o) in triples_statement_id_regarding_object:
+    for (s,_,_) in triples_statement_id_regarding_object:
         collect_statement_id_regarding_object.add(str(s))
 
     inter_section = collect_statement_id_regarding_subject.intersection(collect_statement_id_regarding_object)
 
-    if len(inter_section) == 1:
+    if len(inter_section) == 1: #check if there are triples with > 1? should be an error
         return inter_section
     else:
         return None
