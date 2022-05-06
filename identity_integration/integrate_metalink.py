@@ -6,8 +6,8 @@ rdf_subject = "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject"
 rdf_object = "http://www.w3.org/1999/02/22-rdf-syntax-ns#object"
 max_id = 0
 new_graph = Graph()
-FILES = ["../data/commons-sameas-links_lang=nl.ttl"]
-
+FILES = ["commons-sameas-links_lang=en.ttl"]
+DESTINATION = "extending_metalink.ttl"
 # %%
 def find_statement_id(subject, object, g):
     collect_statement_id_regarding_subject = set()
@@ -41,9 +41,11 @@ def create_metalink_data(path, format):
 
     for s,_,o in g:
         id = find_statement_id(s, o, g)
-        if id != None: continue
+        if id != None: 
+            print(str(s) + " " + str(o) + " already in metalink form")
+            continue
 
-        new_id = URIRef(str(max_id))
+        new_id = URIRef("metalink/extended/id/" + str(max_id))
         new_graph.add((new_id, URIRef(rdf_subject), s))
         new_graph.add((new_id, URIRef(rdf_object), o))
         max_id += 1
@@ -51,9 +53,11 @@ def create_metalink_data(path, format):
 
 # %%
 for file in FILES:
+    print("extending metalink for file " + file)
     create_metalink_data(file, file.split(".")[-1])
 
 # %%
-new_graph.serialize(destination="extended_metalink.ttl")
+print("done, serializing graph to " + DESTINATION)
+new_graph.serialize(destination=DESTINATION)
 
 
