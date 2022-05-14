@@ -135,3 +135,6 @@ data/sameas-external.ttl
 identity_integration/ten_triples_Ata.ttl
 identity_integration/commons-sameas-links_lang=en.ttl
 hdt_analysis/integrated.hdt.index.v1-1
+identity_integration/commons-sameas-links_lang=nl.ttl
+identity_integration/converted_nt/commons-sameas-links_lang=nl.nt
+.gitignore
