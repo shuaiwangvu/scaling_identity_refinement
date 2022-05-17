@@ -7,7 +7,7 @@ exactmatch = 'http://www.w3.org/2004/02/skos/core#exactMatch'
 def count_triples(path):
 	g = Graph()
 
-	g.parse(path, format="turtle")
+	g.parse(path, format="turtle", encoding='utf-8')
 	
 
 	count_owl = 0
@@ -21,10 +21,9 @@ def count_triples(path):
 			new_g.add((s,p,o))
 	print(path, " has ", len(g), " triples and ", count_owl , " amount of sameAs triples", count_skos , " amount of skos:exacthMatch triples")
 
-files = ["commons-sameas-links_lang=nl", 'commons-sameas-links_lang=es', 'commons-sameas-links_lang=de', 'commons-sameas-links_lang=fr', 'commons-sameas-links_lang=pt',
-'commons-sameas-links_lang=en','commons-sameas-links_lang=ja']
+files = ["commons-sameas-links_lang=nl"]
 format = ".ttl"
 for file in files:
 	new_g = Graph()
 	count_triples(f"{file}{format}")
-	new_g.serialize(destination=f"converted_nt/{file}.nt", format="nt")
+	new_g.serialize(destination=f"converted_nt/{file}.nt", format="nt", encoding='utf-8')
