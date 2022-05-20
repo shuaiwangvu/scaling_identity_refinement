@@ -138,3 +138,4 @@ hdt_analysis/integrated.hdt.index.v1-1
 identity_integration/commons-sameas-links_lang=nl.ttl
 identity_integration/converted_nt/commons-sameas-links_lang=nl.nt
 .gitignore
+identity_integration/converted_nt/commons-sameas-links_lang=nl.nt.gz

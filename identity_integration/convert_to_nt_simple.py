@@ -1,7 +1,7 @@
 # %%
-SAMEAS = 'http://www.w3.org/2002/07/owl#sameAs'
-EXACTMATCH = 'http://www.w3.org/2004/02/skos/core#exactMatch'
-files = ['commons-sameas-links_lang=nl.ttl']
+SAMEAS = b'http://www.w3.org/2002/07/owl#sameAs'
+EXACTMATCH = b'http://www.w3.org/2004/02/skos/core#exactMatch'
+files = ['wikidata-20220502-all-BETA.nt.gz']
 
 # %%
 def convert_to_nt(filename):
@@ -9,10 +9,10 @@ def convert_to_nt(filename):
     total_triples = 0
     sameas_triples = 0
     exactmatch_triples = 0
-    new_file = open(f"converted_nt/{filename.split('.')[0]}.nt", 'a', encoding='utf-8')
-    with open(filename, 'r', encoding='utf-8') as infile:
+    new_file = open(f"converted_nt/{filename.split('.')[0]}.nt.gz", 'ab')
+    with open(filename, 'rb') as infile:
         for line in infile: 
-            if '<' in line:
+            if b'<' in line:
                 total_triples += 1
                 if SAMEAS in line:
                     sameas_triples += 1
@@ -28,5 +28,4 @@ def convert_to_nt(filename):
 # %%
 for file in files:
 	convert_to_nt(file)
-
-
+# %%
