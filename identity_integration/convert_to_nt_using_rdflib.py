@@ -1,3 +1,6 @@
+"""
+convert file from ttl to nt using rdflib (parser will load entire file into memory, not useful for large files)
+"""
 from rdflib import Graph, URIRef
 
 sameas = 'http://www.w3.org/2002/07/owl#sameAs'
