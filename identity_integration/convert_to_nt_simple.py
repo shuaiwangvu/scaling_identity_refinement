@@ -24,6 +24,7 @@ def convert_to_nt(filename):
             for line in infile:
                 try: 
                     if '<' in line:
+                        total_triples += 1
                         if SAMEAS in line:
                             Graph().parse(data=line, format=FORMAT)
                             sameas_triples += 1
@@ -32,7 +33,6 @@ def convert_to_nt(filename):
                             Graph().parse(data=line, format=FORMAT)
                             exactmatch_triples += 1
                             new_file.write(line)
-                        total_triples += 1
                         if total_triples % 10000000 == 0:
                             print ('\tprocessed ', total_triples, ' lines')
                 except ParseError:
