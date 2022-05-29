@@ -12,15 +12,14 @@ from rdflib import Graph
 import rdflib
 import re
 import csv
+from urllib.parse import urlparse
 
 SAMEAS = 'http://www.w3.org/2002/07/owl#sameAs'
+SAMEAS_1 = 'http://schema.org/sameAs'
 EXACTMATCH = 'http://www.w3.org/2004/02/skos/core#exactMatch'
 
 def fix_invalid_line(invalid_line):
-    invalid_spo = re.findall(r"(?<=\<)(.*?)(?=\>)", invalid_line)
-    # check for unicode escape char in string and replace with %20
-    s,p,o = [re.sub(r"\u2005|\u0020|\u00A0|\u1680|\u2000|\u2001|\u2002|\u2003|\u2004|\u2005|\u2006|\u2007|\u2008|\u2009|\u200A|\u202F|\u205f|\u3000", "%20", i) for i in invalid_spo]
-    fixed_line = f"<{s}> <{p}> <{o}> ."
+    fixed_line = urlparse(invalid_line).geturl()
     # save correct IRI and invalid IRI to a tsv
     with open(f"{file.split('.')[0]}_fixed_triples.tsv", 'a') as out:
         tsv = csv.writer(out, delimiter='\t')
@@ -45,7 +44,7 @@ def validate_file(file):
                     if '<' in line:
                         total_triples += 1
                         try:
-                            if SAMEAS in line:
+                            if SAMEAS in line or SAMEAS_1 in line:
                                 sameas_triples += 1
                                 Graph().parse(data=line, format=FORMAT)
                                 extracted_file.write(line)
