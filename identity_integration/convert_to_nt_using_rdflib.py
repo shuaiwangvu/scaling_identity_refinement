@@ -9,7 +9,7 @@ SAMEAS_1 = 'http://schema.org/sameAs'
 EXACTMATCH = 'http://www.w3.org/2004/02/skos/core#exactMatch'
 
 
-def count_triples_and_serialize(path, new_g):
+def count_triples_and_serialize(path):
 	new_g = Graph()
 	g = Graph()
 
