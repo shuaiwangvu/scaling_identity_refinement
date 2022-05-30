@@ -58,7 +58,7 @@ def validate_file(file):
                                 Graph().parse(data=fixed_line, format=FORMAT)
                                 extracted_file.write(fixed_line)
                             except:
-                                print(e, fixed_line)
+                                invalid_lines += 1
                                 error_file.write(line)
     
     print(f"{file} has {total_triples} total triples, {sameas_triples} owl:sameAs triples and, {exactmatch_triples} skos:exactMatch triples, and {invalid_lines} invalid lines.")
