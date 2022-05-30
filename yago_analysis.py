@@ -3,6 +3,7 @@ from rdflib import Graph
 import csv
 from urllib.parse import urlparse
 from rdflib.plugins.parsers.ntriples import ParseError
+import re
 
 SAMEAS = 'http://www.w3.org/2002/07/owl#sameAs'
 SAMEAS_LITERAL = 'http://schema.org/sameAs'
@@ -40,6 +41,8 @@ def validate_file(file):
                                 sameas_literal += 1
                                 extracted_file.write(line)
                             except ParseError:
+                                fixed_line = re.search(r"<.*?>", line)
+                                fixed_line = fixed_line.group(0)[1:-1]
                                 fixed_line = urlparse(line).geturl()
                                 try:
                                     Graph().parse(data=fixed_line, format=FORMAT)
