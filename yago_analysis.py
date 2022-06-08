@@ -1,7 +1,7 @@
 import sys
 from rdflib import Graph
 import csv
-from urllib.parse import urlparse
+from urllib.parse import quote
 from rdflib.plugins.parsers.ntriples import ParseError
 import re
 
@@ -43,7 +43,8 @@ def validate_file(file):
                             except ParseError:
                                 fixed_line = re.search(r"<.*?>", line)
                                 fixed_line = fixed_line.group(0)[1:-1]
-                                fixed_line = urlparse(line).geturl()
+                                fixed_line = quote(fixed_line, safe=':/')
+                                fixed_line = re.sub(r'<.*?>', f'<{fixed_line}>', line, count=1)
                                 try:
                                     Graph().parse(data=fixed_line, format=FORMAT)
                                     extracted_file.write(fixed_line)

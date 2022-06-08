@@ -16,6 +16,7 @@ import random
 from tarjan import tarjan
 from collections import Counter
 from hdt import HDTDocument, IdentifierPosition
+import rdflib
 
 sameas = 'http://www.w3.org/2002/07/owl#sameAs'
 my_redirect = "https://krr.triply.cc/krr/metalink/def/redirectedTo" # a relation
@@ -74,25 +75,18 @@ def find_redirects (iri, timeout = standard_timeout):
 
 def load_entities(graph_id):
 
-	input_graph = nx.Graph()
-	path_to_input_graph = './Evaluate_May/' + str(graph_id) + '_edges_original.csv'
-	input_graph_data = pd.read_csv(path_to_input_graph)
-
-	sources = input_graph_data['SUBJECT']
-	targets = input_graph_data['OBJECT']
-	edge_data = zip(sources, targets)
+	g = rdflib.Graph().parse(graph_id, format='nt11')
 
 	entities = set()
-	for (s,t) in edge_data:
-		entities.add(s)
-		entities.add(t)
+	for (s,_,t) in g.triples((None, None, None)):
+		entities.add(s.toPython())
+		entities.add(t.toPython())
 	return entities
 
-# graph_ids = [11116]
-graph_ids = [11116, 240577, 395175, 14514123]
+graph_ids = sys.argv[1:]
 
 for graph_id in graph_ids:
-	print ('\n\n\ngraph id = ', graph_id)
+	print ('\n\n\nprocessing file = ', graph_id)
 	start = time.time()
 
 	redi_graph = nx.DiGraph()
