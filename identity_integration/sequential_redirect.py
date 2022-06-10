@@ -1,21 +1,8 @@
 # this script is for testing only and is not being maintained anymore 
-import pandas as pd
-import numpy as np
-import datetime
-import pickle
 import time
 import networkx as nx
 import sys
 import csv
-from z3 import *
-from bidict import bidict
-import matplotlib.pyplot as plt
-import tldextract
-import json
-import random
-from tarjan import tarjan
-from collections import Counter
-from hdt import HDTDocument, IdentifierPosition
 import rdflib
 
 sameas = 'http://www.w3.org/2002/07/owl#sameAs'
@@ -196,7 +183,7 @@ for graph_id in graph_ids:
 					print ('too short? error: ',via_entities)
 			else:
 				print ('error')
-		print ('TIMEOUT: still timeout after final try', count_timeout)
+		print ('TIMEOUT: still timeout after final try', 55555555555555555555555555555555555555)
 
 		timeout_entities = set()
 		entities_to_test = collect_new_entities_to_test

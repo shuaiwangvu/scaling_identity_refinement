@@ -139,3 +139,5 @@ identity_integration/commons-sameas-links_lang=nl.ttl
 identity_integration/converted_nt/commons-sameas-links_lang=nl.nt
 .gitignore
 identity_integration/converted_nt/commons-sameas-links_lang=nl.nt.gz
+commons-sameas-links_lang=nl.ttl
+hdt_analysis/integrated_cc_count.tsv
