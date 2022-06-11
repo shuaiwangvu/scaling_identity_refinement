@@ -14,7 +14,6 @@ for file in sys.argv[1:]:
 
     G = nx.Graph()
     for (s, _, o) in triples:
-        print(s, o)
         G.add_edge(s, o)
 
     cc = [len(c) for c in nx.connected_components(G)]
