@@ -5,6 +5,19 @@ from collections import Counter
 import csv
 import time
 
+def check_two_cc(so, hdt_metalink):
+    for el in so:
+        triples, cardinality_s = hdt_metalink.search_triples(el, "", "")
+        
+        print(cardinality_s, [x for x in triples])
+        if cardinality_s > 1:
+            return False
+
+        _, cardinality_o = hdt_metalink.search_triples("", "", el)
+        if cardinality_o > 1:
+            return False
+    return True
+
 for file in sys.argv[1:]:
     print(f'processing {file}')
     start = time.time()
@@ -14,8 +27,12 @@ for file in sys.argv[1:]:
 
     G = nx.Graph()
     for (s, _, o) in triples:
-        G.add_edge(s, o)
+        if check_two_cc([s,o], hdt_metalink):
+            pass
+        else:
+            G.add_edge(s, o)
 
+    print(f'nxconnectec_components: {[c for c in nx.connected_components(G)]}')
     cc = [len(c) for c in nx.connected_components(G)]
     cc = sorted(cc)
 

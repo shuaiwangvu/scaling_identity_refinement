@@ -1,0 +1,7 @@
+<http://nl.dbpedia.org/resource/Bandoneon> <http://www.w3.org/2002/07/owl#sameAs> <http://commons.dbpedia.org/resource/Bandoneon> .
+<http://nl.dbpedia.org/resource/Buggyen> <http://www.w3.org/2002/07/owl#sameAs> <http://commons.dbpedia.org/resource/Kite_buggying> .
+<http://nl.dbpedia.org/resource/Geïntegreerde_schakeling> <http://www.w3.org/2002/07/owl#sameAs> <http://commons.dbpedia.org/resource/Integrated_circuit> .
+<http://nl.dbpedia.org/resource/Chinese_Muur> <http://www.w3.org/2002/07/owl#sameAs> <http://commons.dbpedia.org/resource/长城> .
+<http://google.com> <http://www.w3.org/2002/07/owl#sameAs> <http://commons.dbpedia.org/resource/Bandoneon> .
+<http://commons.dbpedia.org/resource/长城> <http://www.w3.org/2002/07/owl#sameAs> <http://youtube.com> .
+<http://commons.dbpedia.org/resource/长城> <http://www.w3.org/2002/07/owl#sameAs> <http://youtube.com> .
