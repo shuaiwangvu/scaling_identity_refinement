@@ -7,14 +7,12 @@ import time
 
 def check_two_cc(so, hdt_metalink):
     for el in so:
-        triples, cardinality_s = hdt_metalink.search_triples(el, "", "")
-        
-        print(cardinality_s, [x for x in triples])
+        _, cardinality_s = hdt_metalink.search_triples(el, "", "")
         if cardinality_s > 1:
             return False
 
         _, cardinality_o = hdt_metalink.search_triples("", "", el)
-        if cardinality_o > 1:
+        if cardinality_s + cardinality_o > 1:
             return False
     return True
 
@@ -26,18 +24,20 @@ for file in sys.argv[1:]:
     triples, _ = hdt_metalink.search_triples("", "", "")
 
     G = nx.Graph()
+    cc_for_two = []
     for (s, _, o) in triples:
         if check_two_cc([s,o], hdt_metalink):
-            pass
+            cc_for_two.append(2)
         else:
             G.add_edge(s, o)
 
-    print(f'nxconnectec_components: {[c for c in nx.connected_components(G)]}')
     cc = [len(c) for c in nx.connected_components(G)]
+    cc = cc_for_two + cc
     cc = sorted(cc)
 
     with open(f"{file.split('.')[0]}_cc_count.tsv", 'w') as out:
         tsv = csv.writer(out, delimiter='\t')
+        tsv.writerow(['connected component size', 'number of occurences'])
         for key,value in Counter(cc).items():
             tsv.writerow([key, value])
             
