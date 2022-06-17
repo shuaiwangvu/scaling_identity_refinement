@@ -33,8 +33,10 @@ for file in sys.argv[1:]:
             identity_set.merge(y_id, b" " + x)
         elif x_id and y_id and x_id != y_id:
             IS_of_y = identity_set.get(y_id)
+            identity_set.delete(y_id)
             identity_set.merge(x_id, b" " + IS_of_y)
             for mapping_key in IS_of_y.split():
+                mapping_IS.delete(mapping_key)
                 mapping_IS.put(mapping_key, x_id)
       
     print(f'finished processing {file}')
