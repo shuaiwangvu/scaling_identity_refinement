@@ -33,15 +33,8 @@ for file in sys.argv[1:]:
         elif x_id and y_id and x_id != y_id:
             identity_set[x_id] = " ".join([identity_set[x_id].decode(), identity_set[y_id].decode()])
             for el in identity_set[y_id].split():
-                print(f"merging: {el}")
                 mapping_IS[el] = x_id
-            identity_set.pop(el)
-    print('identity set:')
-    for k in identity_set.keys():
-        print(f"{k} -> {identity_set[k].decode()}")
-    print('mapping_IS:')
-    for k in mapping_IS.keys():
-        print(f"{k} -> {mapping_IS[k]}")
+            del identity_set[y_id]
     identity_set.close()
     mapping_IS.close()
       
