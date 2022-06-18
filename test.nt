@@ -5,3 +5,6 @@
 <http://google.com> <http://www.w3.org/2002/07/owl#sameAs> <http://commons.dbpedia.org/resource/Bandoneon> .
 <http://commons.dbpedia.org/resource/长城> <http://www.w3.org/2002/07/owl#sameAs> <http://youtube.com> .
 <http://commons.dbpedia.org/resource/长城> <http://www.w3.org/2002/07/owl#sameAs> <http://youtube.com> .
+<http://commons.dbpedia.org/resource/长城> <http://www.w3.org/2002/07/owl#sameAs> <http://vu.nl> .
+<http://vu.nl> <http://www.w3.org/2002/07/owl#sameAs> <http://commons.dbpedia.org/resource/长城> .
+<http://vu.nl> <http://www.w3.org/2002/07/owl#sameAs> <http://nl.dbpedia.org/resource/Geïntegreerde_schakeling> .
