@@ -15,21 +15,21 @@ class AppendEntity(rocksdb.interfaces.AssociativeMergeOperator):
 
 opts = rocksdb.Options()
 opts.merge_operator = AppendEntity()
-with rocksdb.DB("compacted_kg_identity_set_rocksdb.db", opts) as identity_set:
-    it = identity_set.iteritems()
-    it.seek_to_first()
-    with open('id2terms.tsv', 'w') as out:
-        tsv = csv.writer(out, delimiter="\t")
-        for k,v in it:
-            tsv.writerow([k.decode(),v.decode()])
+identity_set =  rocksdb.DB("compacted_kg_identity_set_rocksdb.db", opts)
+it = identity_set.iteritems()
+it.seek_to_first()
+with open('id2terms.tsv', 'w') as out:
+    tsv = csv.writer(out, delimiter="\t")
+    for k,v in it:
+        tsv.writerow([k.decode(),v.decode()])
         
-with rocksdb.DB("compacted_kg_mapping_IS_rocksdb.db", rocksdb.Options()) as mapping_IS:
-    it = mapping_IS.iteritems()
-    it.seek_to_first()
-    with open('terms2id.tsv', 'w') as out:
-        tsv = csv.writer(out, delimiter="\t")
-        for k,v in it:
-            tsv.writerow([k.decode(),v.decode()])
+mapping_IS =  rocksdb.DB("compacted_kg_mapping_IS_rocksdb.db", rocksdb.Options())
+it_map = mapping_IS.iteritems()
+it_map.seek_to_first()
+with open('terms2id.tsv', 'w') as out:
+    tsv = csv.writer(out, delimiter="\t")
+    for k,v in it_map:
+        tsv.writerow([k.decode(),v.decode()])
 
 end = time.time()
 hours, rem = divmod(end-start, 3600)

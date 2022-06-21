@@ -16,7 +16,7 @@ class AssocCounter(rocksdb.interfaces.AssociativeMergeOperator):
 opts = rocksdb.Options()
 opts.create_if_missing = True
 opts.merge_operator = AssocCounter()
-with rocksdb.DB("compacted_kg_identity_set.db", rocksdb.Options()) as identity_set:
+with rocksdb.DB("compacted_kg_identity_set_rocksdb.db", rocksdb.Options()) as identity_set:
     with rocksdb.DB("count_cc_size_and_occurence.db", opts) as counter:
         it = identity_set.iteritems()
         it.seek_to_first()
