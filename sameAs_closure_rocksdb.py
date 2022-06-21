@@ -45,10 +45,14 @@ for file in sys.argv[1:]:
                 # mapping_IS.delete(mapping_key)
                 mapping_IS.put(mapping_key, x_id)
     print("identity set:")
-    for k,v in identity_set.iteritems():
+    it = identity_set.iteritems()
+    it.seek_to_first()
+    for k,v in it:
         print(f"{k} => {v}")
     print("mapping IS:")
-    for k,v in mapping_IS.iteritems():
+    it = mapping_IS.iteritems()
+    it.seek_to_first()
+    for k,v in it:
         print(f"{k} => {v}")
 
     print(f'finished processing {file}')
