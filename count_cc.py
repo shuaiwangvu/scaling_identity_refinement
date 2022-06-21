@@ -1,49 +1,31 @@
-import networkx as nx
-import sys
-from hdt import HDTDocument
-from collections import Counter
 import csv
 import time
+import rocksdb
 
-def check_two_cc(so, hdt_metalink):
-    for el in so:
-        _, cardinality_s = hdt_metalink.search_triples(el, "", "")
-        if cardinality_s > 1:
-            return False
+start = time.time()
 
-        _, cardinality_o = hdt_metalink.search_triples("", "", el)
-        if cardinality_s + cardinality_o > 1:
-            return False
-    return True
+class AssocCounter(rocksdb.interfaces.AssociativeMergeOperator):
+    def merge(self, key, existing_value, value):
+        if existing_value:
+            s = int(existing_value) + int(value)
+            return (True, str(s).encode())
+        return (True, value)
 
-for file in sys.argv[1:]:
-    print(f'processing {file}')
-    start = time.time()
+    def name(self):
+        return b'AssocCounter'
+opts = rocksdb.Options()
+opts.create_if_missing = True
+opts.merge_operator = AssocCounter()
+with rocksdb.DB("compacted_kg_identity_set.db", rocksdb.Options()) as identity_set:
+    with rocksdb.DB("count_cc_size_and_occurence.db", opts) as counter:
+        it = identity_set.iteritems()
+        it.seek_to_first()
+        for k,v in it:
+            len_cc = len(v.decode().split())
+            counter.merge(len_cc, b"1")
 
-    hdt_metalink = HDTDocument(file)
-    triples, _ = hdt_metalink.search_triples("", "", "")
-
-    G = nx.Graph()
-    cc_for_two = []
-    for (s, _, o) in triples:
-        if check_two_cc([s,o], hdt_metalink):
-            cc_for_two.append(2)
-        else:
-            G.add_edge(s, o)
-
-    cc = [len(c) for c in nx.connected_components(G)]
-    cc = cc_for_two + cc
-    cc = sorted(cc)
-
-    with open(f"{file.split('.')[0]}_cc_count.tsv", 'w') as out:
-        tsv = csv.writer(out, delimiter='\t')
-        tsv.writerow(['connected component size', 'number of occurences'])
-        for key,value in Counter(cc).items():
-            tsv.writerow([key, value])
-            
-    print(f'finished processing {file}: {Counter(cc)}')
-    end = time.time()
-    hours, rem = divmod(end-start, 3600)
-    minutes, seconds = divmod(rem, 60)
-    time_formated = "{:0>2}:{:0>2}:{:05.2f}".format(int(hours),int(minutes),seconds)
-    print("Time taken = ", time_formated)
+end = time.time()
+hours, rem = divmod(end-start, 3600)
+minutes, seconds = divmod(rem, 60)
+time_formated = "{:0>2}:{:0>2}:{:05.2f}".format(int(hours),int(minutes),seconds)
+print("Time taken = ", time_formated)
