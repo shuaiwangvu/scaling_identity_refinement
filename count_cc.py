@@ -13,16 +13,17 @@ class AssocCounter(rocksdb.interfaces.AssociativeMergeOperator):
 
     def name(self):
         return b'AssocCounter'
+        
 opts = rocksdb.Options()
 opts.create_if_missing = True
 opts.merge_operator = AssocCounter()
-with rocksdb.DB("compacted_kg_identity_set_rocksdb.db", rocksdb.Options()) as identity_set:
-    with rocksdb.DB("count_cc_size_and_occurence.db", opts) as counter:
-        it = identity_set.iteritems()
-        it.seek_to_first()
-        for k,v in it:
-            len_cc = len(v.decode().split())
-            counter.merge(len_cc, b"1")
+identity_set = rocksdb.DB("compacted_kg_identity_set_rocksdb.db", rocksdb.Options())
+counter =  rocksdb.DB("count_cc_size_and_occurence.db", opts)
+it = identity_set.iteritems()
+it.seek_to_first()
+for k,v in it:
+    len_cc = len(v.decode().split())
+    counter.merge(len_cc, b"1")
 
 end = time.time()
 hours, rem = divmod(end-start, 3600)
