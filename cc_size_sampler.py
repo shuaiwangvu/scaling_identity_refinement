@@ -21,7 +21,7 @@ def random_sample(file, size):
     count_cc_two = 0
     count_cc_Between_3_and_10 = 0
     count_cc_larger_than_ten = 0
-    identity_set = rocksdb.DB("compacted_kg_identity_set_rocksdb.db", rocksdb.Options(merge_operator=AppendEntity()))
+    identity_set = rocksdb.DB(f"{file.split('.')[0]}_identity_set_rocksdb.db", rocksdb.Options(merge_operator=AppendEntity()))
 
     (_, CARD) = file.search_triples("", "", "")
     cardinality = CARD
@@ -33,7 +33,7 @@ def random_sample(file, size):
         (triples, res_card) = file.search_triples("", "", "", limit=1, offset=offset)
         spo = next(triples)
         s,_,_ = spo
-        len_cc = len(identity_set[s].decode().split())
+        len_cc = len(identity_set.get(s.encode()).decode().split())
         if len_cc == 2 and count_cc_two < size:
             count_cc_two += 2
             sample.add(tuple_to_triple(spo))
