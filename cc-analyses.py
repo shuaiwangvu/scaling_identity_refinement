@@ -1,3 +1,5 @@
+# creates term2id and id2term .tsv
+
 import csv
 import time
 import rocksdb
