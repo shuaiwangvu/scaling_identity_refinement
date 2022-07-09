@@ -76,7 +76,7 @@ for graph_id in graph_ids:
 	print ('\n\n\nprocessing file = ', graph_id)
 	start = time.time()
 
-	# redi_graph = nx.DiGraph()
+	redi_graph = nx.DiGraph()
 
 	entities_to_test = load_entities(graph_id)
 	print ('there are ', len (entities_to_test), ' entities in the graph ')
@@ -112,7 +112,7 @@ for graph_id in graph_ids:
 				if len (via_entities) > 1:
 					for i, s in enumerate(via_entities[:-1]):
 						t = via_entities[i+1]
-						# redi_graph.add_edge(s, t)
+						redi_graph.add_edge(s, t)
 
 					if via_entities[-1] not in entities_to_test:
 						collect_new_entities_to_test.add(via_entities[-1])
@@ -144,7 +144,7 @@ for graph_id in graph_ids:
 					# count_redirect += 1
 					for i, s in enumerate(via_entities[:-1]):
 						t = via_entities[i+1]
-						# redi_graph.add_edge(s, t)
+						redi_graph.add_edge(s, t)
 
 					if via_entities[-1] not in entities_to_test:
 						collect_new_entities_to_test.add(via_entities[-1])
@@ -168,14 +168,14 @@ for graph_id in graph_ids:
 			elif result == TIMEOUT:
 				count_timeout += 1
 				# timeout_entities.add(e)
-				print (e)
+				# print (e)
 			elif result == REDIRECT:
 				redirect_result[e] = REDIRECT
 				if len (via_entities) > 1:
 					# count_redirect += 1
 					for i, s in enumerate(via_entities[:-1]):
 						t = via_entities[i+1]
-						# redi_graph.add_edge(s, t)
+						redi_graph.add_edge(s, t)
 
 					if via_entities[-1] not in entities_to_test:
 						collect_new_entities_to_test.add(via_entities[-1])
@@ -205,12 +205,12 @@ for graph_id in graph_ids:
 	time_formated = "{:0>2}:{:0>2}:{:05.2f}".format(int(hours),int(minutes),seconds)
 	print("Time taken = ", time_formated)
 
-	# print ('Exporting')
-	# file = open( str(graph_id) + "_redirect.nt", 'w')
-	# redirect_file_writer = csv.writer(file, delimiter=' ')
-	# for (s,t) in redi_graph.edges():
-	# 	# log_file_writer.writerow([s,t])
-	# 	if t[0] != '"':
-	# 		redirect_file_writer.writerow(['<'+s+'>', '<'+my_redirect+'>', '<'+t+'>', '.'])
-	# 	else:
-	# 		redirect_file_writer.writerow(['<'+s+'>', '<'+my_redirect+'>', t+'^^<http://www.w3.org/2001/XMLSchema#string>', '.'])
+	print ('Exporting')
+	file = open( str(graph_id) + "_redirect.nt", 'w')
+	redirect_file_writer = csv.writer(file, delimiter=' ')
+	for (s,t) in redi_graph.edges():
+		# log_file_writer.writerow([s,t])
+		if t[0] != '"':
+			redirect_file_writer.writerow(['<'+s+'>', '<'+my_redirect+'>', '<'+t+'>', '.'])
+		else:
+			redirect_file_writer.writerow(['<'+s+'>', '<'+my_redirect+'>', t+'^^<http://www.w3.org/2001/XMLSchema#string>', '.'])
