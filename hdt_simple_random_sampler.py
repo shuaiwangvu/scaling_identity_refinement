@@ -8,15 +8,20 @@ from rdf_utils import tuple_to_triple, tuple_to_ntriple
 import datetime as dt
 
 def random_sample(file, size):
-    (_, CARD) = file.search_triples("", "", "")
-    cardinality = CARD
+    (_, cardinality) = file.search_triples("", "", "")
     sample = set()
-    if size > CARD:
+    entities = set()
+    if size > cardinality:
         raise Exception("Sample size exceeds dataset size")
     while len(sample) < size:
         offset = random.randint(0, cardinality - 1)
-        (triples, res_card) = file.search_triples("", "", "", limit=1, offset=offset)
-        sample.add(tuple_to_triple(next(triples)))
+        triples, _ = file.search_triples("", "", "", limit=1, offset=offset)
+        triple = next(triples)
+        s,_,o = triple
+        if not s in entities or not o in entities:
+            sample.add(tuple_to_triple(triple))
+            entities.add(s)
+            entities.add(o)
 
     return list(sample)
 
