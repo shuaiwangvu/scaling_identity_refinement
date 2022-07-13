@@ -22,7 +22,7 @@ db = rocksdb.DB(options.file, rocksdb.Options(create_if_missing=False))
 it = db.iterkeys()
 it.seek_to_first()
 
-with open(options.output_file, 'w', encoding='utf-8', newline='') as output_file:
+with open(options.output_file, 'w', newline='') as output_file:
     writer = csv.writer(output_file)
     for key in it:
         writer.writerow(key.decode())
