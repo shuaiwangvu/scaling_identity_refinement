@@ -25,7 +25,7 @@ it.seek_to_first()
 with open(options.output_file, 'w') as output_file:
     writer = csv.writer(output_file)
     for key in it:
-        writer.writerow(list(key.decode()))
+        writer.writerow([key.decode()])
 
 print(f'finished processing')
 end = time.time()
