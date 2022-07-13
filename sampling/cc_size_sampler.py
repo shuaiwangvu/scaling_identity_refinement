@@ -4,7 +4,7 @@ import rocksdb
 import sys
 from hdt import HDTDocument
 import random
-from rdf_utils import tuple_to_triple, tuple_to_ntriple
+from sampling.rdf_utils import tuple_to_triple, tuple_to_ntriple
 import datetime as dt
 
 class AppendEntity(rocksdb.interfaces.AssociativeMergeOperator):
