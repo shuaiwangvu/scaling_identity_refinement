@@ -4,7 +4,7 @@ import pandas
 import time
 
 def get_options():
-    parser = argparse.ArgumentParser(description="rocksDB_keys2csv: iterates through all keys in a database, and writes them to a csv file")
+    parser = argparse.ArgumentParser(description="samples N lines from a file")
     parser.add_argument("-f", "--file",
                         help="input file (required)", required=True)
     parser.add_argument("-o", "--output-file",
@@ -15,22 +15,29 @@ def get_options():
                         type=int, help="number of records in file (required)", required=True)                   
     args = parser.parse_args()
     return args
-    
+
 start = time.time()
 
 options = get_options()
-filename = options.file
+in_file = options.file
 out_file = options.output_file
-maxsize = options.dataset_size
-size = options.number_of_samples
+max_lines = options.dataset_size
+sample_size = options.number_of_samples
 
-if size > maxsize:
+if sample_size > max_lines:
     raise Exception("Sample nr exceeds maxsize")
 
-skip = sorted(random.sample(range(size), size-maxsize))
-df = pandas.read_csv(filename, skiprows=skip)
+sample = set()
 
-df.to_csv(out_file, index=False)
+while len(sample) < sample_size:
+    skip = sorted(random.sample(range(max_lines), max_lines-sample_size))
+    df = pandas.read_csv(in_file, skiprows=skip)
+    for _, row in df.iterrows():
+        sample.add(row[0])
+
+with open(out_file, "w+") as file:
+    for entity in sample:
+         file.write(entity+'\n')
 
 print(f'finished processing')
 end = time.time()

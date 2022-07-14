@@ -2,10 +2,10 @@ import argparse
 import random
 import rocksdb
 import pandas
-import time
+import datetime as dt
 
 def get_options():
-    parser = argparse.ArgumentParser(description="rocksDB_keys2csv: iterates through all keys in a database, and writes them to a csv file")
+    parser = argparse.ArgumentParser(description="samples CC(2), CC(3-10), CC(>10) for N samples each. requires term2id and id2terms first.")
     parser.add_argument("-f", "--file",
                         help="input file (required)", required=True)
     parser.add_argument("-o", "--output-file",
@@ -33,19 +33,19 @@ def random_sample(input_file, sample_size, max_lines_file, identity_set, mapping
         raise Exception("Sample nr exceeds maxsize")
     
     while not(len(sample_two) == len(sample_Between_3_and_10) == len(sample_larger_than_ten) == sample_size):
-        skip = sorted(random.sample(range(sample_size), sample_size-max_lines_file))
+        skip = sorted(random.sample(range(max_lines), max_lines-sample_size))
         df = pandas.read_csv(input_file, skiprows=skip)
 
         for _, row in df.iterrows():
-            mapping_index = mapping_IS.get(row.encode())
+            mapping_index = mapping_IS.get(row[0].encode())
             len_cc = len(identity_set.get(mapping_index).decode().split())
 
             if len_cc == 2 and len(sample_two) < sample_size:
-                sample_two.add(row)
+                sample_two.add(row[0])
             elif len_cc > 2 and len_cc <= 10 and len(sample_Between_3_and_10) < sample_size:
-                sample_Between_3_and_10.add(row)
+                sample_Between_3_and_10.add(row[0])
             elif len_cc > 10 and len(sample_larger_than_ten) < sample_size:
-                sample_larger_than_ten.add(row)
+                sample_larger_than_ten.add(row[0])
 
     return list(sample_two), list(sample_Between_3_and_10), list(sample_larger_than_ten)
 
@@ -59,6 +59,22 @@ sample_size = options.number_of_samples
 identity_set = options.identity_set
 mapping_is = options.mapping_is
 
-sampling_metadata = random_sample(input_file, sample_size, max_lines_file, identity_set, mapping_is)
+sampling_metadata_two, sampling_metadata_Between_3_and_10, sampling_metadata_larger_than_ten = random_sample(input_file, sample_size, max_lines_file, identity_set, mapping_is)
 
-print(sampling_metadata)
+start = dt.datetime.now()
+sample_id = str(start.timestamp()).replace(".", "")
+
+sample_fn = "{}".format("sample_{}_two.nt".format(sample_id))
+with open(sample_fn, "w+") as file:
+    for entity in sampling_metadata_two:
+         file.write(entity+'\n')
+
+sample_fn = "{}".format("sample_{}_Between_3_and_10.nt".format(sample_id))
+with open(sample_fn, "w+") as file:
+    for entity in sampling_metadata_Between_3_and_10:
+         file.write(entity+'\n')
+
+sample_fn = "{}".format("sample_{}_larger_than_ten.nt".format(sample_id))
+with open(sample_fn, "w+") as file:
+    for entity in sampling_metadata_larger_than_ten:
+         file.write(entity+'\n')
