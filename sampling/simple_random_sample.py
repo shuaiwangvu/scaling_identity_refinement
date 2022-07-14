@@ -11,22 +11,26 @@ def get_options():
                         help="output file (required)", required=True)
     parser.add_argument("-n", "--number-of-samples",
                         type=int, default=100000, help="number of samples to write (default=100000)")
-    parser.add_argument("-m", "--max-size",
-                        help="number of records in file (required)", required=True)                   
+    parser.add_argument("-d", "--dataset-size",
+                        type=int, help="number of records in file (required)", required=True)                   
     args = parser.parse_args()
     return args
-
-options = get_options()
-
+    
 start = time.time()
 
-n = options.max_size #number of records in file
-s = options.number_of_samples #desired sample size
+options = get_options()
 filename = options.file
-skip = sorted(random.sample(range(n),n-s))
+out_file = options.output_file
+maxsize = options.dataset_size
+size = options.number_of_samples
+
+if size > maxsize:
+    raise Exception("Sample nr exceeds maxsize")
+
+skip = sorted(random.sample(range(size), size-maxsize))
 df = pandas.read_csv(filename, skiprows=skip)
 
-df.to_csv(options.output_file, index=False)
+df.to_csv(out_file, index=False)
 
 print(f'finished processing')
 end = time.time()
