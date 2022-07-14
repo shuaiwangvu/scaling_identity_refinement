@@ -49,8 +49,6 @@ def random_sample(input_file, sample_size, max_lines_file, identity_set, mapping
 
     return list(sample_two), list(sample_Between_3_and_10), list(sample_larger_than_ten)
 
-start = time.time()
-
 options = get_options()
 input_file = options.file
 out_file = options.output_file
