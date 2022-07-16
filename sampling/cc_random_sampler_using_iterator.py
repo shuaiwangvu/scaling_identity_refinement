@@ -6,7 +6,7 @@ import rocksdb
 # sample n lines of the csv file without duplicates and writes them to a new csv file
 # uses commandline arguments for input file and output file
 
-
+# nohup ./cc_sample.sh > ../sampler_final_final.nohup
 class AppendEntity(rocksdb.interfaces.AssociativeMergeOperator):
     def merge(self, key, existing_value, value):
         if existing_value:
