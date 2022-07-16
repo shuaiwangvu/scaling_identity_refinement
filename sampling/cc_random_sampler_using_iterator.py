@@ -1,6 +1,7 @@
 import random
 import csv
 import argparse
+import rocksdb
 # open a csv file without loading it all in memory
 # sample n lines of the csv file without duplicates and writes them to a new csv file
 # uses commandline arguments for input file and output file
@@ -19,10 +20,12 @@ parser.add_argument("mapping_is", help="mapping identity set rocksdb")
 
 args = parser.parse_args()
 
+identity_set = rocksdb.DB(args.identity_set, rocksdb.Options(create_if_missing=False))
+mapping_IS = rocksdb.DB(args.mapping_is, rocksdb.Options(create_if_missing=False))
 
 def check_cc_size(l):
-    mapping_index = args.mapping_is.get(l.encode())
-    len_cc = len(args.identity_set.get(mapping_index).decode().split())
+    mapping_index = identity_set.get(l.encode())
+    len_cc = len(mapping_IS.get(mapping_index).decode().split())
     return len_cc
 
 # randomly replace an element in a list with a new elemnt
