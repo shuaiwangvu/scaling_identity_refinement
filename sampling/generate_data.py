@@ -674,11 +674,11 @@ for id in gs:
 	# export_implicit_comment_source(comment_file_path, g)
 	#
 	# # step 5: obtain redirect nodes
-	# redi_graph = obtain_redirect_graph(g)
-	# redirect_file_name = dir + str(id) +'_redirect_edges.nt'
-	# export_redirect_graph_edges(redirect_file_name, redi_graph)
-	# redirect_file_name = dir + str(id) +'_redirect_nodes.tsv'
-	# export_redirect_graph_nodes(redirect_file_name, redi_graph)
+	redi_graph = obtain_redirect_graph(g)
+	redirect_file_name = dir + str(id) +'_redirect_edges.nt'
+	export_redirect_graph_edges(redirect_file_name, redi_graph)
+	redirect_file_name = dir + str(id) +'_redirect_nodes.tsv'
+	export_redirect_graph_nodes(redirect_file_name, redi_graph)
 
 	# step 6: obtain the encoding equivalence graph
 	# ee_graph = obtain_ee_graph(g)

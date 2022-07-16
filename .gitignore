@@ -143,3 +143,8 @@ commons-sameas-links_lang=nl.ttl
 hdt_analysis/integrated_cc_count.tsv
 test.hdt
 test.hdt.index.v1-1
+sampling/testing.csv
+sampling/generate_data.py
+sampling/generate_data.py
+sampling/testing_redirect_nodes.tsv
+sampling/testing_redirect_edges.nt
