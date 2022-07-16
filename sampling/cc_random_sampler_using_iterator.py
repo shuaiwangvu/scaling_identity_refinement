@@ -59,7 +59,10 @@ def sample_large_csv(input_file, output_file, n):
                 else:
                     results_10.append(entity)
 
-        random.shuffle(results)
+        random.shuffle(results_2)
+        random.shuffle(results_3_9)
+        random.shuffle(results_10)
+        
         reader = csv.reader(f)
         for i, v in enumerate(reader, n):
             r = random.randint(0, i)
