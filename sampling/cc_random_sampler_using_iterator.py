@@ -73,17 +73,17 @@ def sample_large_csv(input_file, output_file, n):
                 CC = check_cc_size(v)
                 if CC == 2:
                     if len(results_2) == n:
-                        results_2 = replace_random_element(results_2, v)
+                        results_2[r] = v
                     else:
                         results_2.append(v)
                 if CC > 2 and CC <= 10:
                     if len(results_3_9) == n:
-                        results_3_9 = replace_random_element(results_3_9, v)
+                        results_3_9[r] = v
                     else:
                         results_3_9.append(v)
                 if CC > 10:
                     if len(results_10) == n:
-                        results_10 = replace_random_element(results_10, v)
+                        results_10[r] = v
                     else:
                         results_10.append(v)
         
