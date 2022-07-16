@@ -28,19 +28,43 @@ def check_cc_size(l):
     len_cc = len(identity_set.get(mapping_index).decode().split())
     return len_cc
 
+# randomly replace an element in a list with a new elemnt
+
+
+def replace_random_element(l, e):
+    index = random.randint(0, len(l) - 1)
+    l[index] = e
+    return l
+
 # sample large csv file without loading the entire file into memory
 def sample_large_csv(input_file, output_file, n):
     with open(input_file, "r") as f:
         results_2 = []
-
+        results_3_9 = []
+        results_10 = []
         reader = csv.reader(f)
         for _ in range(n):
             entity = next(reader)
             CC = check_cc_size(entity)
             if CC == 2:
-                results_2.append(entity)
+                if len(results_2) == n:
+                    results_2 = replace_random_element(results_2, entity)
+                else:
+                    results_2.append(entity)
+            if CC > 2 and CC <= 10:
+                if len(results_3_9) == n:
+                    results_3_9 = replace_random_element(results_3_9, entity)
+                else:
+                    results_3_9.append(entity)
+            if CC > 10:
+                if len(results_10) == n:
+                    results_10 = replace_random_element(results_10, entity)
+                else:
+                    results_10.append(entity)
 
         random.shuffle(results_2)
+        random.shuffle(results_3_9)
+        random.shuffle(results_10)
         
         reader = csv.reader(f)
         for i, v in enumerate(reader, n):
@@ -52,9 +76,26 @@ def sample_large_csv(input_file, output_file, n):
                         results_2[r] = v
                     else:
                         results_2.append(v)
+                if CC > 2 and CC <= 10:
+                    if len(results_3_9) == n:
+                        results_3_9[r] = v
+                    else:
+                        results_3_9.append(v)
+                if CC > 10:
+                    if len(results_10) == n:
+                        results_10[r] = v
+                    else:
+                        results_10.append(v)
         
         with open(f"output_file_2", "w") as f2:
             writer = csv.writer(f2)
             writer.writerows(results_2)
+        with open(f"output_file_3_9", "w") as f2:
+            writer = csv.writer(f2)
+            writer.writerows(results_3_9)
+        with open(f"output_file_10", "w") as f2:
+            writer = csv.writer(f2)
+            writer.writerows(results_10)
+
 
 sample_large_csv(args.input_file, args.output_file, int(args.n))
