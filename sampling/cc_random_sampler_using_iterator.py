@@ -91,8 +91,7 @@ def sample_large_csv(input_file, output_file, n, c):
                             results[r] = v
                         else:
                             results.append(v)
-
-        with open(f"output_file_2", "w") as f2:
+        with open(f"{output_file}", "w") as f2:
             writer = csv.writer(f2)
             writer.writerows(results)
 
