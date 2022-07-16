@@ -24,8 +24,8 @@ identity_set = rocksdb.DB(args.identity_set, rocksdb.Options(create_if_missing=F
 mapping_IS = rocksdb.DB(args.mapping_is, rocksdb.Options(create_if_missing=False))
 
 def check_cc_size(l):
-    mapping_index = identity_set.get(l.encode())
-    len_cc = len(mapping_IS.get(mapping_index).decode().split())
+    mapping_index = mapping_IS.get(l[0].encode())
+    len_cc = len(identity_set.get(mapping_index).decode().split())
     return len_cc
 
 # randomly replace an element in a list with a new elemnt
@@ -48,17 +48,17 @@ def sample_large_csv(input_file, output_file, n):
             CC = check_cc_size(entity)
             if CC == 2:
                 if len(results_2) == n:
-                    replace_random_element(results_2, entity)
+                    results_2 = replace_random_element(results_2, entity)
                 else:
                     results_2.append(entity)
             if CC > 2 and CC <= 10:
                 if len(results_3_9) == n:
-                    replace_random_element(results_3_9, entity)
+                    results_3_9 = replace_random_element(results_3_9, entity)
                 else:
                     results_3_9.append(entity)
             if CC > 10:
                 if len(results_10) == n:
-                    replace_random_element(results_10, entity)
+                    results_10 = replace_random_element(results_10, entity)
                 else:
                     results_10.append(entity)
 
@@ -73,17 +73,17 @@ def sample_large_csv(input_file, output_file, n):
                 CC = check_cc_size(v)
                 if CC == 2:
                     if len(results_2) == n:
-                        replace_random_element(results_2, v)
+                        results_2 = replace_random_element(results_2, v)
                     else:
                         results_2.append(v)
                 if CC > 2 and CC <= 10:
                     if len(results_3_9) == n:
-                        replace_random_element(results_3_9, v)
+                        results_3_9 = replace_random_element(results_3_9, v)
                     else:
                         results_3_9.append(v)
                 if CC > 10:
                     if len(results_10) == n:
-                        replace_random_element(results_10, v)
+                        results_10 = replace_random_element(results_10, v)
                     else:
                         results_10.append(v)
         
