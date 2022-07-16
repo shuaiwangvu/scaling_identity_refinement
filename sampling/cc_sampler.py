@@ -1,3 +1,6 @@
+# kg        433443217       433,443,217
+# old kg    179739567       179,739,567
+
 import argparse
 import random
 import rocksdb
@@ -33,7 +36,7 @@ def random_sample(input_file, sample_size, max_lines_file, identity_set, mapping
         raise Exception("Sample nr exceeds maxsize")
     
     while not(len(sample_two) == len(sample_Between_3_and_10) == len(sample_larger_than_ten) == sample_size):
-        skip = sorted(random.sample(range(max_lines), max_lines-sample_size))
+        skip = sorted(random.sample(range(max_lines_file), max_lines_file-(sample_size*3)))
         df = pandas.read_csv(input_file, skiprows=skip)
 
         for _, row in df.iterrows():

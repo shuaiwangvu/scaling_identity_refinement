@@ -148,3 +148,5 @@ sampling/generate_data.py
 sampling/generate_data.py
 sampling/testing_redirect_nodes.tsv
 sampling/testing_redirect_edges.nt
+sampling/testaws.py
+sampling/man.csv
