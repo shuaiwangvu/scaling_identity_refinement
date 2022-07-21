@@ -150,3 +150,8 @@ sampling/testing_redirect_nodes.tsv
 sampling/testing_redirect_edges.nt
 sampling/testaws.py
 sampling/man.csv
+redirect_scripts/cc_sample_2_redirect_graph.p
+redirect_scripts/cc_samples_3_9_redirect_graph.p
+redirect_scripts/cc_samples_10_redirect_graph.p
+sampling/testing_redirect_graph.p
+sampling/testing_redirect_graph.graphml

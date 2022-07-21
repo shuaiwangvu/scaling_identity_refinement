@@ -49,8 +49,8 @@ def find_redirects(iri, timeout=standard_timeout):
     except Timeout:
         # print('The request timed out', iri)
         return TIMEOUT, None
-    except:
-        #print (f'error: ', iri)
+    except Exception as e:
+        #print (f'error: ', iri, e)
         return ERROR, None
 
 
@@ -110,7 +110,6 @@ def export_redirect_graph_nodes(file_name, graph):
         else:
             print('Error: ', graph.nodes[n]['remark'])
 
-
 def create_redi_graph(graph_id):
     start = time.time()
     redi_graph = nx.DiGraph()
@@ -121,9 +120,18 @@ def create_redi_graph(graph_id):
     for entity in entities_to_test:
         redi_graph.add_node(entity, remark='unknown')
 
+    count_not_found = 0
+    count_found_without_redirect = 0
+    count_error = 0
+    count_timeout = 0
+    count_redirect_until_timeout = 0
+    count_redirect_until_not_found = 0
+    count_redirect_until_error = 0
+    count_redirect_until_found = 0
+    count_other = 0
+
     for timeout_parameters in [standard_timeout, retry_timeout, final_try_timeout]:
         timeout_entities = set()
-        end_of_redirect_entities = set()
         for e in redi_graph.nodes():
             if redi_graph.nodes[e]['remark'] == 'unknown':
                 entities_to_test.add(e)
@@ -132,13 +140,18 @@ def create_redi_graph(graph_id):
                 e, timeout=timeout_parameters)
             if result == NOTFOUND:
                 redi_graph.nodes[e]['remark'] = 'not_found'
+                count_not_found += 1
             elif result == FOUNDWITHOUTREDIRECT:
                 redi_graph.nodes[e]['remark'] = 'found_without_redirect'
+                count_found_without_redirect += 1
             elif result == ERROR:
                 redi_graph.nodes[e]['remark'] = 'error'
+                count_error += 1
             elif result == TIMEOUT:
                 timeout_entities.add(e)
                 redi_graph.nodes[e]['remark'] = 'timeout'
+                if final_try_timeout == timeout_parameters:
+                    count_timeout += 1
             elif result == REDIRECT:
                 redi_graph.nodes[e]['remark'] = 'redirected'
                 if via_entities[0] != e:
@@ -161,9 +174,51 @@ def create_redi_graph(graph_id):
                         redi_graph.add_node(t, remark='unknown')
 
                         redi_graph.add_edge(s, t)
-
-                    # if via_entities[-1] not in end_of_redirect_entities and via_entities[-1] not in timeout_entities:
-                    end_of_redirect_entities.add(via_entities[-1])
+                    
+                    valid_remarks = ['error', 'found_without_redirect' , 'not_found']
+                    last_redirect = via_entities[-1]
+                    if not redi_graph.nodes[last_redirect]['remark'] in valid_remarks:
+                        result, _ = find_redirects(last_redirect, timeout=standard_timeout)
+                        #print(last_redirect, result)
+                        if result == NOTFOUND:
+                            redi_graph.nodes[last_redirect]['remark'] = 'not_found'
+                            count_redirect_until_not_found += 1
+                           # print(last_redirect)
+                        elif result == FOUNDWITHOUTREDIRECT:
+                            redi_graph.nodes[last_redirect]['remark'] = 'found_without_redirect'
+                            count_redirect_until_found += 1
+                        elif result == ERROR:
+                            redi_graph.nodes[last_redirect]['remark'] = 'error'
+                            count_redirect_until_error += 1
+                    if not redi_graph.nodes[last_redirect]['remark'] in valid_remarks:
+                        result, _ = find_redirects(last_redirect, timeout=retry_timeout)
+                        #print(last_redirect, result)
+                        if result == NOTFOUND:
+                            redi_graph.nodes[last_redirect]['remark'] = 'not_found'
+                            count_redirect_until_not_found += 1
+                        elif result == FOUNDWITHOUTREDIRECT:
+                            redi_graph.nodes[last_redirect]['remark'] = 'found_without_redirect'
+                            count_redirect_until_found += 1
+                           # print(last_redirect)
+                        elif result == ERROR:
+                            redi_graph.nodes[last_redirect]['remark'] = 'error'
+                            count_redirect_until_error += 1
+                    if not redi_graph.nodes[last_redirect]['remark'] in valid_remarks:
+                        result, _ = find_redirects(last_redirect, timeout=final_try_timeout)
+                        #print(last_redirect, result)
+                        if result == NOTFOUND:
+                            redi_graph.nodes[last_redirect]['remark'] = 'not_found'
+                            count_redirect_until_not_found += 1
+                        elif result == FOUNDWITHOUTREDIRECT:
+                            redi_graph.nodes[last_redirect]['remark'] = 'found_without_redirect'
+                            count_redirect_until_found += 1
+                            #print(last_redirect)
+                        elif result == ERROR:
+                            redi_graph.nodes[last_redirect]['remark'] = 'error'
+                            count_redirect_until_error += 1
+                    if redi_graph.nodes[last_redirect]['remark'] not in valid_remarks:
+                            redi_graph.nodes[last_redirect]['remark'] = 'timeout'
+                            count_redirect_until_timeout += 1
                 else:
                     print('error: ', via_entities)
 
@@ -174,9 +229,7 @@ def create_redi_graph(graph_id):
                 print('error')
 
         print('TIMEOUT: there are ', len(timeout_entities), ' timeout entities')
-        print('End Of Redirect: there are ', len(
-            end_of_redirect_entities), ' end of redirect entities')
-        entities_to_test = timeout_entities.union(end_of_redirect_entities)
+        entities_to_test = timeout_entities
 
         for e in redi_graph.nodes():
 
@@ -187,9 +240,6 @@ def create_redi_graph(graph_id):
                       redi_graph.in_degree(e))
                 # if e in graph.nodes():
                 # 	print ('it is in the original graph!')
-
-    for m in end_of_redirect_entities:
-        redi_graph.add_node(m, remark='timeout')
 
     update_against = set()
     for n in redi_graph.nodes():
@@ -234,37 +284,28 @@ def create_redi_graph(graph_id):
                 print('via_entities = ', via_entities)
                 redi_graph.nodes[n]['remark'] = 'redirect_until_timeout'
 
-    count_not_found = 0
-    count_found_without_redirect = 0
-    count_error = 0
-    count_timeout = 0
-    count_redirected = 0
-    count_redirect_until_timeout = 0
-    count_redirect_until_not_found = 0
-    count_redirect_until_error = 0
-    count_redirect_until_found = 0
-    count_other = 0
 
-    for n in redi_graph.nodes():
-        if redi_graph.nodes[n]['remark'] == 'not_found':
-            count_not_found += 1
-        elif redi_graph.nodes[n]['remark'] == 'found_without_redirect':
-            count_found_without_redirect += 1
-        elif redi_graph.nodes[n]['remark'] == 'error':
-            count_error += 1
-        elif redi_graph.nodes[n]['remark'] == 'timeout':
-            count_timeout += 1
-        elif redi_graph.nodes[n]['remark'] == 'redirect_until_timeout':
-            count_redirect_until_timeout += 1
-        elif redi_graph.nodes[n]['remark'] == 'redirect_until_not_found':
-            count_redirect_until_not_found += 1
-        elif redi_graph.nodes[n]['remark'] == 'redirect_until_error':
-            count_redirect_until_error += 1
-        elif redi_graph.nodes[n]['remark'] == 'redirect_until_found':
-            count_redirect_until_found += 1
-        else:
-            print('strange : ', redi_graph.nodes[n]['remark'])
-            count_other += 1
+
+    # for n in redi_graph.nodes():
+    #     if redi_graph.nodes[n]['remark'] == 'not_found':
+    #         count_not_found += 1
+    #     elif redi_graph.nodes[n]['remark'] == 'found_without_redirect':
+    #         count_found_without_redirect += 1
+    #     elif redi_graph.nodes[n]['remark'] == 'error':
+    #         count_error += 1
+    #     elif redi_graph.nodes[n]['remark'] == 'timeout':
+    #         count_timeout += 1
+    #     elif redi_graph.nodes[n]['remark'] == 'redirect_until_timeout':
+    #         count_redirect_until_timeout += 1
+    #     elif redi_graph.nodes[n]['remark'] == 'redirect_until_not_found':
+    #         count_redirect_until_not_found += 1
+    #     elif redi_graph.nodes[n]['remark'] == 'redirect_until_error':
+    #         count_redirect_until_error += 1
+    #     elif redi_graph.nodes[n]['remark'] == 'redirect_until_found':
+    #         count_redirect_until_found += 1
+    #     else:
+    #         print('strange : ', redi_graph.nodes[n]['remark'])
+    #         count_other += 1
 
     count_redirected = count_redirect_until_timeout + count_redirect_until_not_found + \
         count_redirect_until_error + count_redirect_until_found
@@ -318,6 +359,8 @@ for graph_id in graph_ids:
         f"{graph_id.split('.')[0]}_redirect_nodes.tsv", redi_graph)
     pickle.dump(redi_graph, open(
         f"{graph_id.split('.')[0]}_redirect_graph.p", "wb"))
+    #save a directed graph
+    nx.write_graphml(redi_graph, f"{graph_id.split('.')[0]}_redirect_graph.graphml")
     
     # # count_notfound = 0
     # # count_no_redirect = 0
